@@ -7,6 +7,7 @@ import time
 
 import numpy as np
 from pso import PSO_Beta
+from ffa import  FFA_Beta
 
 # data source
 data = 'data/solar-data_12-13_v2.csv'
@@ -47,7 +48,7 @@ battery_10 = Battery(name='testovacia baterka', price=0, capacity=10, charging_l
 
 customers = dataLoader.load_all_data(data)
 
-customer = customers[100]
+customer = customers[10]
 customer.base_line_for_whole_year()
 
 print('data processing finished\n')
@@ -59,7 +60,8 @@ start = time.time()
 
 # RUN ##############################
 
-PSO_Beta(customer.year[278], battery_5, 2.5)
+PSO_Beta(customer.year[21], battery_5, 2.5)
+FFA_Beta(customer.year[21], battery_5, 2.5)
 
 
 
