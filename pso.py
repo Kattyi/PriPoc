@@ -1,3 +1,7 @@
+#  Particle swarm optimization
+
+#  https://ieeexplore.ieee.org/abstract/document/488968
+
 import random
 import numpy as np
 import matplotlib.pyplot as plt
