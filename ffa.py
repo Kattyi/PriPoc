@@ -158,6 +158,10 @@ def FFA_Beta(day, battery, state_of_charge, max_iters=FFA_MAX_ITERS):
 
     battery_state_of_charge = battery.state_of_charge(nbest, state_of_charge)
 
+    smoothed_soch = pd.Series(battery_state_of_charge).rolling(window=4).mean()
+    smoothed_soch[:4] = battery_state_of_charge[:4]
+    smoothed_pi, smoothed_beta = calculate_from_smooth_soch(smoothed_soch, day.base_line)
+
     if PLOT_BETA_SOLUTION:
 
         fig, ax = plt.subplots()
@@ -224,10 +228,10 @@ def FFA_Beta(day, battery, state_of_charge, max_iters=FFA_MAX_ITERS):
         fig.dpi = PLOT_DPI_300
 
         # soch = battery.state_of_charge(beta, battery.initial_capacity)
-        smoothed_soch = pd.Series(battery_state_of_charge).rolling(window=4).mean()
-        smoothed_soch[:4] = battery_state_of_charge[:4]
-
-        smoothed_pi, smoothed_beta = calculate_from_smooth_soch(smoothed_soch, day.base_line)
+        # smoothed_soch = pd.Series(battery_state_of_charge).rolling(window=4).mean()
+        # smoothed_soch[:4] = battery_state_of_charge[:4]
+        #
+        # smoothed_pi, smoothed_beta = calculate_from_smooth_soch(smoothed_soch, day.base_line)
 
         ax5.plot(day.base_line, 'r')
         ax5.plot(smoothed_pi, 'g')
@@ -252,9 +256,9 @@ def FFA_Beta(day, battery, state_of_charge, max_iters=FFA_MAX_ITERS):
 
         plt.show()
 
-    print('day:', day.date, '| possible savings:', BestQuality, '| with battery profile:', nbest)
+    # print('day:', day.date, '| possible savings:', BestQuality, '| with battery profile:', nbest)
 
-    return BestQuality, nbest
+    return calculate_fitness_for_Beta(day, battery, smoothed_beta), smoothed_soch.iloc[-1]
 
 
 def calculate_from_smooth_soch(smooth_soch, base_line):

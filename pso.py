@@ -143,9 +143,14 @@ def PSO_Beta(day, battery, state_of_charge, max_iters=PSO_MAX_ITERS):
     # for particle in range(PARTICLES_COUNT):
     #     print(particle, ':', pBestScore[particle])
 
-    print('best fitness: ' + str(gBestScore))
+    # print('best fitness: ' + str(gBestScore))
 
     battery_state_of_charge = battery.state_of_charge(gBest, state_of_charge)
+
+
+    smoothed_soch = pd.Series(battery_state_of_charge).rolling(window=4).mean()
+    smoothed_soch[:4] = battery_state_of_charge[:4]
+    smoothed_pi, smoothed_beta = calculate_from_smooth_soch(smoothed_soch, day.base_line)
 
     if PLOT_BETA_SOLUTION:
 
@@ -213,10 +218,10 @@ def PSO_Beta(day, battery, state_of_charge, max_iters=PSO_MAX_ITERS):
         fig.dpi = PLOT_DPI_300
 
         # soch = battery.state_of_charge(beta, battery.initial_capacity)
-        smoothed_soch = pd.Series(battery_state_of_charge).rolling(window=4).mean()
-        smoothed_soch[:4] = battery_state_of_charge[:4]
-
-        smoothed_pi, smoothed_beta = calculate_from_smooth_soch(smoothed_soch, day.base_line)
+        # smoothed_soch = pd.Series(battery_state_of_charge).rolling(window=4).mean()
+        # smoothed_soch[:4] = battery_state_of_charge[:4]
+        #
+        # smoothed_pi, smoothed_beta = calculate_from_smooth_soch(smoothed_soch, day.base_line)
 
         ax5.plot(day.base_line, 'r')
         ax5.plot(smoothed_pi, 'g')
@@ -241,9 +246,9 @@ def PSO_Beta(day, battery, state_of_charge, max_iters=PSO_MAX_ITERS):
 
         plt.show()
 
-    print('day:', day.date, '| possible savings:', gBestScore, '| with battery profile:', gBest)
+    # print('day:', day.date, '| possible savings:', gBestScore, '| with battery profile:', gBest)
 
-    return gBestScore, gBest
+    return calculate_fitness_for_Beta(day, battery, smoothed_beta), smoothed_soch.iloc[-1]
 
 
 def calculate_from_smooth_soch(smooth_soch, base_line):
