@@ -47,7 +47,7 @@ battery_10 = Battery(name='testovacia baterka', price=0, capacity=10, charging_l
 customers = dataLoader.load_all_data(data)
 
 # select current customer
-customer = customers[10]
+customer = customers[1]
 customer.base_line_for_whole_year()
 
 print('data processing finished\n')
@@ -57,21 +57,17 @@ days = len(customer.year)
 pso_savings_1 = np.zeros(days)
 ffa_savings_1 = np.zeros(days)
 
-pso_state_of_charge = const.BATTERY_INITIAL_CAPACITY
-ffa_state_of_charge = const.BATTERY_INITIAL_CAPACITY
+pso_state_of_charge = 0.5
+ffa_state_of_charge = 0.5
 
 # customer.year[0].plot(general_consumption=True, controlled_load=True, gross_generation=True, base_line=False, battery_profile=False, total_consumption=False)
 
 
-start = time.time()
-
 # RUN ##############################
-
-for day in range(const.S_LENGTH):
+start = time.time()
+for day in range(days):
     pso_savings_1[day], pso_state_of_charge = PSO_Beta(customer.year[day], battery_1, pso_state_of_charge)
     ffa_savings_1[day], ffa_state_of_charge = FFA_Beta(customer.year[day], battery_1, ffa_state_of_charge)
-
-    print('#')
 
 print('PSO | 1 kwh')
 print('total: ', sum(pso_savings_1), 'au$')
@@ -81,16 +77,19 @@ print('FFA | 1 kwh')
 print('total: ', sum(ffa_savings_1), 'au$')
 print('average: ', sum(ffa_savings_1) / days, 'au$')
 print()
+end = time.time()
+print('elapsed:', end - start)
 print('###################')
 print()
 
 pso_savings_3 = np.zeros(days)
 ffa_savings_3 = np.zeros(days)
 
-pso_state_of_charge = const.BATTERY_INITIAL_CAPACITY
-ffa_state_of_charge = const.BATTERY_INITIAL_CAPACITY
+pso_state_of_charge = 1.5
+ffa_state_of_charge = 1.5
 
-for day in range(const.S_LENGTH):
+start = time.time()
+for day in range(days):
     pso_savings_3[day], pso_state_of_charge = PSO_Beta(customer.year[day], battery_3, pso_state_of_charge)
     ffa_savings_3[day], ffa_state_of_charge = FFA_Beta(customer.year[day], battery_3, ffa_state_of_charge)
 
@@ -104,14 +103,17 @@ print('average: ', sum(ffa_savings_3) / days, 'au$')
 print()
 print('###################')
 print()
+end = time.time()
+print('elapsed:', end - start)
 
 pso_savings_5 = np.zeros(days)
 ffa_savings_5 = np.zeros(days)
 
-pso_state_of_charge = const.BATTERY_INITIAL_CAPACITY
-ffa_state_of_charge = const.BATTERY_INITIAL_CAPACITY
+pso_state_of_charge = 2.5
+ffa_state_of_charge = 2.5
 
-for day in range(const.S_LENGTH):
+start = time.time()
+for day in range(days):
     pso_savings_5[day], pso_state_of_charge = PSO_Beta(customer.year[day], battery_5, pso_state_of_charge)
     ffa_savings_5[day], ffa_state_of_charge = FFA_Beta(customer.year[day], battery_5, ffa_state_of_charge)
 
@@ -123,16 +125,19 @@ print('FFA | 5 kwh')
 print('total: ', sum(ffa_savings_5), 'au$')
 print('average: ', sum(ffa_savings_5) / days, 'au$')
 print()
+end = time.time()
+print('elapsed:', end - start)
 print('###################')
 print()
 
 pso_savings_10 = np.zeros(days)
 ffa_savings_10 = np.zeros(days)
 
-pso_state_of_charge = const.BATTERY_INITIAL_CAPACITY
-ffa_state_of_charge = const.BATTERY_INITIAL_CAPACITY
+pso_state_of_charge = 5
+ffa_state_of_charge = 5
 
-for day in range(const.S_LENGTH):
+start = time.time()
+for day in range(days):
     pso_savings_10[day], pso_state_of_charge = PSO_Beta(customer.year[day], battery_10, pso_state_of_charge)
     ffa_savings_10[day], ffa_state_of_charge = FFA_Beta(customer.year[day], battery_10, ffa_state_of_charge)
 
@@ -144,8 +149,9 @@ print('FFA | 10 kwh')
 print('total: ', sum(ffa_savings_10), 'au$')
 print('average: ', sum(ffa_savings_10) / days, 'au$')
 print()
+end = time.time()
+print('elapsed:', end - start)
 print('###################')
 print()
-
 
 # END ##############################
